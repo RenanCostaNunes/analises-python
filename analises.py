@@ -7,7 +7,7 @@ import matplotlib.colors as mcolors
 df_tickets = pd.read_excel('Report_ITSrvices.xlsx')
 
 # Título da aplicação no Streamlit
-st.title('Análise de Tickets por Urgência, MTTR, Assunto e Mês')
+st.title('Análise de Tickets por Urgência, MTTR e Assunto')
 
 # Exibir o dataframe (opcional)
 st.write("Dados dos Tickets:", df_tickets)
@@ -56,17 +56,6 @@ ax.set_xlabel('Assunto')
 ax.set_ylabel('Número de Tickets')
 plt.xticks(rotation=45)
 plt.tight_layout()
-st.pyplot(fig)
 
-# Gráfico de Barras de Tickets por Mês
-df_tickets['Mes de Abertura'] = df_tickets['Aberto em'].dt.to_period('M')
-tickets_por_mes = df_tickets['Mes de Abertura'].value_counts().sort_index()
-
-fig, ax = plt.subplots(figsize=(10, 6))
-tickets_por_mes.plot(kind='bar', color='cornflowerblue', ax=ax)
-ax.set_title('Número de Tickets por Mês')
-ax.set_xlabel('Mês de Abertura')
-ax.set_ylabel('Número de Tickets')
-plt.xticks(rotation=45)
-plt.tight_layout()
+# Exibir o gráfico de Assunto no Streamlit
 st.pyplot(fig)
