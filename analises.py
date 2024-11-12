@@ -162,33 +162,22 @@ tempo_medio_por_categoria.plot(kind='barh', color='green', ax=ax)
 ax.set_title('Tempo Médio de Fechamento por Categoria')
 ax.set_xlabel('Tempo Médio de Fechamento (Dias)')
 ax.set_ylabel('Categoria')
-
 # Adicionando labels ao lado de cada barra
 for i, v in enumerate(tempo_medio_por_categoria):
     ax.text(v + 0.5, i, '{:.2f}'.format(v), ha='left', va='center')
-
 plt.tight_layout()
 st.pyplot(fig)
+
 # Relação entre Tipo e Urgência dos Tickets (Barras Empilhadas)
 urgencia_por_tipo = df_tickets.groupby(['Tipo', 'Urgência']).size().unstack(fill_value=0)
+
+# Reordenar as colunas para a ordem desejada
+urgencia_por_tipo = urgencia_por_tipo[['Baixa', 'Média', 'Alta', 'Urgente']]
+
 fig, ax = plt.subplots(figsize=(10, 6))
 
-# Obter a lista de categorias de urgência na ordem correta
-urgencia_categories = urgencia_por_tipo.columns.tolist()
-
-# Definir cores personalizadas, mapeando 'Urgente' para vermelho
-colors = []
-for urgencia in urgencia_categories:
-    if urgencia == 'Baixa':
-        colors.append('green')
-    elif urgencia == 'Média':
-        colors.append('yellow')
-    elif urgencia == 'Alta':
-        colors.append('orange')
-    elif urgencia == 'Urgente':
-        colors.append('red')
-    else:
-        colors.append('grey')
+# Definir cores personalizadas correspondentes à ordem
+colors = ['green', 'yellow', 'orange', 'red']
 
 urgencia_por_tipo.plot(kind='bar', stacked=True, ax=ax, color=colors)
 ax.set_title('Relação entre Tipo e Urgência dos Tickets')
@@ -201,8 +190,7 @@ for container in ax.containers:
     ax.bar_label(container, label_type='center')
 
 plt.tight_layout()
-st.pyplot(fig)
-# Proporção de Tickets Fechados e Abertos
+st.pyplot(fig)# Proporção de Tickets Fechados e Abertos
 status_counts = df_tickets['Status'].value_counts()
 fig, ax = plt.subplots()
 status_counts.plot(
