@@ -3,15 +3,13 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import matplotlib.colors as mcolors
 
-# Carregar os dados
 df_tickets = pd.read_excel('Report_ITSrvices.xlsx')
 
 st.title('Análise de Tickets')
 st.subheader('Grupo: Renan da Costa, Pedro Ferri')
 
 st.write("Dados dos Tickets:", df_tickets)
-
-# Gráfico de Distribuição por Categoria
+# Tabela de Dados
 fig, ax = plt.subplots()
 df_tickets['Categoria'].value_counts().plot(
     kind='pie', 
@@ -21,9 +19,11 @@ df_tickets['Categoria'].value_counts().plot(
 )
 ax.set_title('Distribuição Por Categoria')
 ax.set_ylabel('')
+
+
 st.pyplot(fig)
 
-# Gráfico de Distribuição por Tipo
+#Gráfico Distribuição por tipo
 fig, ax = plt.subplots()
 df_tickets['Tipo'].value_counts().plot(
     kind='pie', 
@@ -32,10 +32,11 @@ df_tickets['Tipo'].value_counts().plot(
     startangle=90
 )
 ax.set_title('Distribuição de Tipos')
-ax.set_ylabel('')
+ax.set_ylabel('') 
 st.pyplot(fig)
 
 # Gráfico de Distribuição de Tickets por Urgência
+plt.rcParams.update({'figure.figsize': (8, 8)})
 fig, ax = plt.subplots()
 df_tickets['Urgência'].value_counts().plot.pie(
     autopct='%1.1f%%', 
@@ -51,7 +52,6 @@ st.pyplot(fig)
 # Cálculo do MTTR por mês
 df_tickets['Tempo de Fechamento (Dias)'] = (df_tickets['Data de Fechamento'] - df_tickets['Aberto em']).dt.days
 average_closure_time = df_tickets.groupby(df_tickets['Aberto em'].dt.to_period('M'))['Tempo de Fechamento (Dias)'].mean()
-
 fig, ax = plt.subplots(figsize=(10, 6))
 average_closure_time.plot(kind='line', marker='o', color='orange', ax=ax)
 ax.set_title('Tempo Médio de Fechamento x Mês de Abertura')
@@ -59,47 +59,42 @@ ax.set_xlabel('Mês de Abertura')
 ax.set_ylabel('Tempo Médio de Fechamento (Dias)')
 ax.grid(True)
 plt.xticks(rotation=45)
-
-# Adicionar valores exatos em cada ponto
-for i, v in enumerate(average_closure_time):
-    ax.text(i, v + 0.5, f'{v:.1f}', ha='center', va='bottom')
 plt.tight_layout()
 st.pyplot(fig)
 
-# Gráfico de Barras de Tickets por Assunto (Top 5) com valores exatos
+# Gráfico de Barras de Tickets por Assunto
 fig, ax = plt.subplots(figsize=(10, 6))
 assunto_counts = df_tickets['Assunto'].value_counts().head(5)
+
 colors = list(mcolors.TABLEAU_COLORS.values())
 assunto_counts.plot(kind='bar', color=colors[:5], ax=ax)
+
 ax.set_title('Top 5 Assuntos por Número de Tickets')
 ax.set_xlabel('Assunto')
 ax.set_ylabel('Número de Tickets')
 plt.xticks(rotation=45)
 
-# Adicionar valores exatos em cada barra
 for i, v in enumerate(assunto_counts):
     ax.text(i, v + 0.5, str(v), ha='center', va='bottom')
 plt.tight_layout()
 st.pyplot(fig)
 
-# Gráfico Número de Tickets x Status com valores exatos
+# Gráfico Número de Tickets x Status
 fig, ax = plt.subplots()
 df_tickets['Status'].value_counts().plot(kind='bar', color='orange', ax=ax)
+
 ax.set_title('Número de Tickets x Status')
 ax.set_xlabel('Status')
 ax.set_ylabel('Número de Tickets')
 plt.xticks(rotation=45)
-
-# Adicionar valores exatos em cada barra
 for p in ax.patches:
     ax.text(p.get_x() + p.get_width() / 2, 
-            p.get_height() + 0.5, 
+            p.get_height() + 0.5,
             str(int(p.get_height())), 
             ha='center', va='bottom', fontsize=10)
 plt.tight_layout()
 st.pyplot(fig)
 
-# Evolução do Número de Tickets por Mês com valores exatos
 df_tickets['Mes de Abertura'] = df_tickets['Aberto em'].dt.to_period('M')
 tickets_por_mes = df_tickets['Mes de Abertura'].value_counts().sort_index()
 
@@ -109,14 +104,10 @@ ax.set_title('Evolução do Número de Tickets por Mês')
 ax.set_xlabel('Mês')
 ax.set_ylabel('Número de Tickets')
 plt.xticks(rotation=45)
-
-# Adicionar valores exatos em cada ponto
-for i, v in enumerate(tickets_por_mes):
-    ax.text(i, v + 0.5, str(v), ha='center')
 plt.tight_layout()
 st.pyplot(fig)
 
-# Distribuição de Tempo de Fechamento (Histograma)
+# 2. Distribuição de Tempo de Fechamento (Histograma)
 fig, ax = plt.subplots(figsize=(10, 6))
 df_tickets['Tempo de Fechamento (Dias)'].dropna().plot(kind='hist', bins=15, color='purple', edgecolor='black', ax=ax)
 ax.set_title('Distribuição do Tempo de Fechamento dos Tickets')
@@ -125,7 +116,7 @@ ax.set_ylabel('Frequência')
 plt.tight_layout()
 st.pyplot(fig)
 
-# Tempo Médio de Fechamento por Categoria com valores exatos
+# 3. Tempo Médio de Fechamento por Categoria
 tempo_medio_por_categoria = df_tickets.groupby('Categoria')['Tempo de Fechamento (Dias)'].mean().sort_values()
 
 fig, ax = plt.subplots(figsize=(10, 6))
@@ -133,14 +124,10 @@ tempo_medio_por_categoria.plot(kind='barh', color='green', ax=ax)
 ax.set_title('Tempo Médio de Fechamento por Categoria')
 ax.set_xlabel('Tempo Médio de Fechamento (Dias)')
 ax.set_ylabel('Categoria')
-
-# Adicionar valores exatos em cada barra horizontal
-for i, v in enumerate(tempo_medio_por_categoria):
-    ax.text(v + 0.5, i, f'{v:.1f}', va='center')
 plt.tight_layout()
 st.pyplot(fig)
 
-# Relação entre Tipo e Urgência dos Tickets (Barras Empilhadas) com valores exatos
+# 4. Relação entre Tipo e Urgência dos Tickets (Barras Empilhadas)
 urgencia_por_tipo = df_tickets.groupby(['Tipo', 'Urgência']).size().unstack()
 
 fig, ax = plt.subplots(figsize=(10, 6))
@@ -149,14 +136,10 @@ ax.set_title('Relação entre Tipo e Urgência dos Tickets')
 ax.set_xlabel('Tipo')
 ax.set_ylabel('Número de Tickets')
 plt.xticks(rotation=45)
-
-# Adicionar valores exatos em cada barra empilhada
-for container in ax.containers:
-    ax.bar_label(container, label_type='center')
 plt.tight_layout()
 st.pyplot(fig)
 
-# Proporção de Tickets Fechados e Abertos
+# 5. Proporção de Tickets Fechados e Abertos
 status_counts = df_tickets['Status'].value_counts()
 
 fig, ax = plt.subplots()
