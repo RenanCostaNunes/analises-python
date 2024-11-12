@@ -59,3 +59,14 @@ plt.tight_layout()
 
 # Exibir o gráfico de Assunto no Streamlit
 st.pyplot(fig)
+
+fig, ax = plt.subplots()
+df_tickets['Status'].value_counts().plot(kind='bar', color='orange', ax=ax)
+ax.set_title('Número de Tickets x Status')
+ax.set_xlabel('Status')
+ax.set_ylabel('Número de Testes')
+plt.xticks(rotation=45)
+plt.tight_layout()
+
+# Exibir o gráfico no Streamlit
+st.pyplot(fig)
