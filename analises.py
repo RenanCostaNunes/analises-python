@@ -82,11 +82,15 @@ st.pyplot(fig)
 # Gráfico Número de Tickets x Status
 fig, ax = plt.subplots()
 df_tickets['Status'].value_counts().plot(kind='bar', color='orange', ax=ax)
+
 ax.set_title('Número de Tickets x Status')
 ax.set_xlabel('Status')
 ax.set_ylabel('Número de Tickets')
 plt.xticks(rotation=45)
+for p in ax.patches:
+    ax.text(p.get_x() + p.get_width() / 2, 
+            p.get_height() + 0.5,
+            str(int(p.get_height())), 
+            ha='center', va='bottom', fontsize=10)
 plt.tight_layout()
-
-# Exibir o gráfico no Streamlit
 st.pyplot(fig)
