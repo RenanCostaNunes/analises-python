@@ -94,3 +94,56 @@ for p in ax.patches:
             ha='center', va='bottom', fontsize=10)
 plt.tight_layout()
 st.pyplot(fig)
+
+df_tickets['Mes de Abertura'] = df_tickets['Aberto em'].dt.to_period('M')
+tickets_por_mes = df_tickets['Mes de Abertura'].value_counts().sort_index()
+
+fig, ax = plt.subplots(figsize=(10, 6))
+tickets_por_mes.plot(kind='line', marker='o', color='blue', ax=ax)
+ax.set_title('Evolução do Número de Tickets por Mês')
+ax.set_xlabel('Mês')
+ax.set_ylabel('Número de Tickets')
+plt.xticks(rotation=45)
+plt.tight_layout()
+st.pyplot(fig)
+
+# 2. Distribuição de Tempo de Fechamento (Histograma)
+fig, ax = plt.subplots(figsize=(10, 6))
+df_tickets['Tempo de Fechamento (Dias)'].dropna().plot(kind='hist', bins=15, color='purple', edgecolor='black', ax=ax)
+ax.set_title('Distribuição do Tempo de Fechamento dos Tickets')
+ax.set_xlabel('Tempo de Fechamento (Dias)')
+ax.set_ylabel('Frequência')
+plt.tight_layout()
+st.pyplot(fig)
+
+# 3. Tempo Médio de Fechamento por Categoria
+tempo_medio_por_categoria = df_tickets.groupby('Categoria')['Tempo de Fechamento (Dias)'].mean().sort_values()
+
+fig, ax = plt.subplots(figsize=(10, 6))
+tempo_medio_por_categoria.plot(kind='barh', color='green', ax=ax)
+ax.set_title('Tempo Médio de Fechamento por Categoria')
+ax.set_xlabel('Tempo Médio de Fechamento (Dias)')
+ax.set_ylabel('Categoria')
+plt.tight_layout()
+st.pyplot(fig)
+
+# 4. Relação entre Tipo e Urgência dos Tickets (Barras Empilhadas)
+urgencia_por_tipo = df_tickets.groupby(['Tipo', 'Urgência']).size().unstack()
+
+fig, ax = plt.subplots(figsize=(10, 6))
+urgencia_por_tipo.plot(kind='bar', stacked=True, ax=ax, colormap='tab20')
+ax.set_title('Relação entre Tipo e Urgência dos Tickets')
+ax.set_xlabel('Tipo')
+ax.set_ylabel('Número de Tickets')
+plt.xticks(rotation=45)
+plt.tight_layout()
+st.pyplot(fig)
+
+# 5. Proporção de Tickets Fechados e Abertos
+status_counts = df_tickets['Status'].value_counts()
+
+fig, ax = plt.subplots()
+status_counts.plot(kind='pie', autopct='%1.1f%%', startangle=90, colors=['#66c2a5', '#fc8d62'], ax=ax, wedgeprops={'edgecolor': 'black'})
+ax.set_title('Proporção de Tickets Fechados e Abertos')
+ax.set_ylabel('')
+st.pyplot(fig)
