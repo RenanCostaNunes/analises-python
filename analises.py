@@ -3,14 +3,24 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import matplotlib.colors as mcolors
 
-# Carregar os dados
 df_tickets = pd.read_excel('Report_ITSrvices.xlsx')
 
-# Título da aplicação no Streamlit
-st.title('Análise de Tickets por Urgência, MTTR e Assunto')
+st.title('Análise de Tickets')
 
-# Exibir o dataframe (opcional)
 st.write("Dados dos Tickets:", df_tickets)
+
+fig, ax = plt.subplots()
+df_tickets['Categoria'].value_counts().plot(
+    kind='pie', 
+    autopct='%1.1f%%', 
+    ax=ax,
+    startangle=90
+)
+ax.set_title('Distribuição Por Categoria')
+ax.set_ylabel('')  # Remove rótulo do eixo Y para uma aparência mais limpa
+
+# Exibir o gráfico no Streamlit
+st.pyplot(fig)
 
 # Gráfico de Distribuição de Tickets por Urgência
 plt.rcParams.update({'figure.figsize': (8, 8)})
