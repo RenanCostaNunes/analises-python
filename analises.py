@@ -22,6 +22,20 @@ ax.set_ylabel('')  # Remove rótulo do eixo Y para uma aparência mais limpa
 # Exibir o gráfico no Streamlit
 st.pyplot(fig)
 
+#Gráfico Distribuição por tipo
+fig, ax = plt.subplots()
+df_tickets['Tipo'].value_counts().plot(
+    kind='pie', 
+    autopct='%1.1f%%', 
+    ax=ax,
+    startangle=90
+)
+ax.set_title('Distribuição de Tipos')
+ax.set_ylabel('') 
+
+# Exibir o gráfico no Streamlit
+st.pyplot(fig)
+
 # Gráfico de Distribuição de Tickets por Urgência
 plt.rcParams.update({'figure.figsize': (8, 8)})
 fig, ax = plt.subplots()
