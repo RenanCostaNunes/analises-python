@@ -6,10 +6,10 @@ import matplotlib.colors as mcolors
 df_tickets = pd.read_excel('Report_ITSrvices.xlsx')
 
 st.title('Análise de Tickets')
-st.header('Grupo: Renan da Costa, Pedro Ferri')
+st.subheader('Grupo: Renan da Costa, Pedro Ferri')
 
 st.write("Dados dos Tickets:", df_tickets)
-
+# Tabela de Dados
 fig, ax = plt.subplots()
 df_tickets['Categoria'].value_counts().plot(
     kind='pie', 
@@ -18,9 +18,9 @@ df_tickets['Categoria'].value_counts().plot(
     startangle=90
 )
 ax.set_title('Distribuição Por Categoria')
-ax.set_ylabel('')  # Remove rótulo do eixo Y para uma aparência mais limpa
+ax.set_ylabel('')
 
-# Exibir o gráfico no Streamlit
+
 st.pyplot(fig)
 
 #Gráfico Distribuição por tipo
@@ -33,8 +33,6 @@ df_tickets['Tipo'].value_counts().plot(
 )
 ax.set_title('Distribuição de Tipos')
 ax.set_ylabel('') 
-
-# Exibir o gráfico no Streamlit
 st.pyplot(fig)
 
 # Gráfico de Distribuição de Tickets por Urgência
@@ -52,13 +50,8 @@ ax.set_ylabel('')
 st.pyplot(fig)
 
 # Cálculo do MTTR por mês
-# Filtrar apenas tickets com data de fechamento e calcular o tempo de fechamento em dias
 df_tickets['Tempo de Fechamento (Dias)'] = (df_tickets['Data de Fechamento'] - df_tickets['Aberto em']).dt.days
-
-# Calcular o tempo médio de fechamento por mês de abertura
 average_closure_time = df_tickets.groupby(df_tickets['Aberto em'].dt.to_period('M'))['Tempo de Fechamento (Dias)'].mean()
-
-# Gráfico de linha do MTTR por mês
 fig, ax = plt.subplots(figsize=(10, 6))
 average_closure_time.plot(kind='line', marker='o', color='orange', ax=ax)
 ax.set_title('Tempo Médio de Fechamento x Mês de Abertura')
@@ -69,27 +62,29 @@ plt.xticks(rotation=45)
 plt.tight_layout()
 st.pyplot(fig)
 
-# Gráfico de Barras de Tickets por Assunto com cores variadas
+# Gráfico de Barras de Tickets por Assunto
 fig, ax = plt.subplots(figsize=(10, 6))
-assunto_counts = df_tickets['Assunto'].value_counts()
-colors = list(mcolors.TABLEAU_COLORS.values())  # Usar uma paleta de cores
+assunto_counts = df_tickets['Assunto'].value_counts().head(5)
 
-# Plotar o gráfico de barras com cores variadas
-assunto_counts.plot(kind='bar', color=colors[:len(assunto_counts)], ax=ax)
-ax.set_title('Número de Tickets por Assunto')
+colors = list(mcolors.TABLEAU_COLORS.values())
+assunto_counts.plot(kind='bar', color=colors[:5], ax=ax)
+
+ax.set_title('Top 5 Assuntos por Número de Tickets')
 ax.set_xlabel('Assunto')
 ax.set_ylabel('Número de Tickets')
 plt.xticks(rotation=45)
-plt.tight_layout()
 
-# Exibir o gráfico de Assunto no Streamlit
+for i, v in enumerate(assunto_counts):
+    ax.text(i, v + 0.5, str(v), ha='center', va='bottom')
+plt.tight_layout()
 st.pyplot(fig)
 
+# Gráfico Número de Tickets x Status
 fig, ax = plt.subplots()
 df_tickets['Status'].value_counts().plot(kind='bar', color='orange', ax=ax)
 ax.set_title('Número de Tickets x Status')
 ax.set_xlabel('Status')
-ax.set_ylabel('Número de Testes')
+ax.set_ylabel('Número de Tickets')
 plt.xticks(rotation=45)
 plt.tight_layout()
 
