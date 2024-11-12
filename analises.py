@@ -169,11 +169,28 @@ for i, v in enumerate(tempo_medio_por_categoria):
 
 plt.tight_layout()
 st.pyplot(fig)
-
 # Relação entre Tipo e Urgência dos Tickets (Barras Empilhadas)
 urgencia_por_tipo = df_tickets.groupby(['Tipo', 'Urgência']).size().unstack(fill_value=0)
 fig, ax = plt.subplots(figsize=(10, 6))
-urgencia_por_tipo.plot(kind='bar', stacked=True, ax=ax, colormap='tab20')
+
+# Obter a lista de categorias de urgência na ordem correta
+urgencia_categories = urgencia_por_tipo.columns.tolist()
+
+# Definir cores personalizadas, mapeando 'Urgente' para vermelho
+colors = []
+for urgencia in urgencia_categories:
+    if urgencia == 'Baixa':
+        colors.append('green')
+    elif urgencia == 'Média':
+        colors.append('yellow')
+    elif urgencia == 'Alta':
+        colors.append('orange')
+    elif urgencia == 'Urgente':
+        colors.append('red')
+    else:
+        colors.append('grey')
+
+urgencia_por_tipo.plot(kind='bar', stacked=True, ax=ax, color=colors)
 ax.set_title('Relação entre Tipo e Urgência dos Tickets')
 ax.set_xlabel('Tipo')
 ax.set_ylabel('Número de Tickets')
@@ -185,7 +202,6 @@ for container in ax.containers:
 
 plt.tight_layout()
 st.pyplot(fig)
-
 # Proporção de Tickets Fechados e Abertos
 status_counts = df_tickets['Status'].value_counts()
 fig, ax = plt.subplots()
