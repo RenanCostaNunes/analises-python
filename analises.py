@@ -6,6 +6,7 @@ import matplotlib.colors as mcolors
 df_tickets = pd.read_excel('Report_ITSrvices.xlsx')
 
 st.title('Análise de Tickets')
+st.header('Grupo: Renan da Costa, Pedro Ferri')
 
 st.write("Dados dos Tickets:", df_tickets)
 
