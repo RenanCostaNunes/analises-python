@@ -8,6 +8,8 @@ df_tickets = pd.read_excel('Report_ITSrvices.xlsx')
 
 st.title('Análise de Tickets')
 st.subheader('Grupo: Renan da Costa, Pedro Ferri')
+st.write("Objetivo: Analisar as métricas dos últimos 8 meses relacionados a serviços de TI.")
+st.write("Importância: Avaliar a eficiência e identificar oportunidades de melhoria no suporte e gestão geral, conforme os reports apresentados e analisados.")
 
 st.write("Dados dos Tickets:", df_tickets)
 
@@ -199,3 +201,9 @@ ax.set_title('Proporção de Tickets Fechados e Abertos')
 ax.set_ylabel('')
 ax.axis('equal')
 st.pyplot(fig)
+
+st.subheader("Diagnóstico Final")
+st.write("Observamos que a empresa possui um total de 1200 chamados, dos quais 240 foram fechados e 960 permanecem sem fechar. ")
+st.write("Esta distribuição resulta em uma taxa de fechamento de apenas 20%, deixando 80% dos chamados ainda em aberto ou em processo de resolução.")
+st.write("Com apenas 57 dos 299 chamados urgentes fechados, a taxa de conclusão é de aproximadamente 19%. ")
+st.write("Essa taxa é preocupante, especialmente considerando a natureza crítica desses chamados. Isso sugere que processos mais eficientes são necessários para garantir uma resposta rápida e eficaz.")
