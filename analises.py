@@ -64,17 +64,22 @@ st.pyplot(fig)
 
 # Cálculo do MTTR por mês
 df_tickets['Tempo de Fechamento (Dias)'] = (df_tickets['Data de Fechamento'] - df_tickets['Aberto em']).dt.days
-average_closure_time = df_tickets.groupby(df_tickets['Aberto em'].dt.to_period('M'))['Tempo de Fechamento (Dias)'].mean()
+average_closure_time = df_tickets.groupby(df_tickets['Aberto em'].dt.to_period('M'))['Tempo de Fechamento (Dias)'].mean().sort_index()
+average_closure_time = average_closure_time.reset_index()
+average_closure_time['Aberto em'] = average_closure_time['Aberto em'].astype(str)
+
 fig, ax = plt.subplots(figsize=(10, 6))
-average_closure_time.plot(kind='line', marker='o', color='orange', ax=ax)
+ax.plot(average_closure_time['Aberto em'], average_closure_time['Tempo de Fechamento (Dias)'], marker='o', color='orange')
 ax.set_title('Tempo Médio de Fechamento x Mês de Abertura')
 ax.set_xlabel('Mês de Abertura')
 ax.set_ylabel('Tempo Médio de Fechamento (Dias)')
 ax.grid(True)
 plt.xticks(rotation=45)
+
 # Adicionando labels aos pontos do gráfico
-for x, y in zip(range(len(average_closure_time)), average_closure_time):
+for x, y in zip(average_closure_time['Aberto em'], average_closure_time['Tempo de Fechamento (Dias)']):
     ax.text(x, y + 0.5, '{:.2f}'.format(y), ha='center', va='bottom')
+
 plt.tight_layout()
 st.pyplot(fig)
 
@@ -87,9 +92,11 @@ ax.set_title('Top 5 Assuntos por Número de Tickets')
 ax.set_xlabel('Assunto')
 ax.set_ylabel('Número de Tickets')
 plt.xticks(rotation=45)
+
 # Adicionando labels acima das barras
 for i, v in enumerate(assunto_counts):
     ax.text(i, v + 0.5, str(v), ha='center', va='bottom')
+
 plt.tight_layout()
 st.pyplot(fig)
 
@@ -101,24 +108,32 @@ ax.set_title('Número de Tickets x Status')
 ax.set_xlabel('Status')
 ax.set_ylabel('Número de Tickets')
 plt.xticks(rotation=45)
+
 # Adicionando labels acima das barras
 for i, v in enumerate(status_counts):
     ax.text(i, v + 0.5, str(v), ha='center', va='bottom', fontsize=10)
+
 plt.tight_layout()
 st.pyplot(fig)
 
 # Evolução do Número de Tickets por Mês
 df_tickets['Mes de Abertura'] = df_tickets['Aberto em'].dt.to_period('M')
 tickets_por_mes = df_tickets['Mes de Abertura'].value_counts().sort_index()
+tickets_por_mes = tickets_por_mes.reset_index()
+tickets_por_mes.columns = ['Mes de Abertura', 'Número de Tickets']
+tickets_por_mes['Mes de Abertura'] = tickets_por_mes['Mes de Abertura'].astype(str)
+
 fig, ax = plt.subplots(figsize=(10, 6))
-tickets_por_mes.plot(kind='line', marker='o', color='blue', ax=ax)
+ax.plot(tickets_por_mes['Mes de Abertura'], tickets_por_mes['Número de Tickets'], marker='o', color='blue')
 ax.set_title('Evolução do Número de Tickets por Mês')
 ax.set_xlabel('Mês')
 ax.set_ylabel('Número de Tickets')
 plt.xticks(rotation=45)
+
 # Adicionando labels aos pontos do gráfico
-for x, y in zip(range(len(tickets_por_mes)), tickets_por_mes):
+for x, y in zip(tickets_por_mes['Mes de Abertura'], tickets_por_mes['Número de Tickets']):
     ax.text(x, y + 0.5, str(y), ha='center', va='bottom')
+
 plt.tight_layout()
 st.pyplot(fig)
 
@@ -128,11 +143,13 @@ n, bins, patches = ax.hist(df_tickets['Tempo de Fechamento (Dias)'].dropna(), bi
 ax.set_title('Distribuição do Tempo de Fechamento dos Tickets')
 ax.set_xlabel('Tempo de Fechamento (Dias)')
 ax.set_ylabel('Frequência')
+
 # Adicionando labels acima de cada barra do histograma
-for i in range(len(patches)):
-    height = patches[i].get_height()
-    if height > 0:
-        ax.text(patches[i].get_x() + patches[i].get_width() / 2., height + 0.5, int(height), ha="center", va="bottom")
+bin_centers = 0.5 * (bins[:-1] + bins[1:])
+for count, x in zip(n, bin_centers):
+    if count > 0:
+        ax.text(x, count + 0.5, int(count), ha='center', va='bottom')
+
 plt.tight_layout()
 st.pyplot(fig)
 
@@ -143,9 +160,11 @@ tempo_medio_por_categoria.plot(kind='barh', color='green', ax=ax)
 ax.set_title('Tempo Médio de Fechamento por Categoria')
 ax.set_xlabel('Tempo Médio de Fechamento (Dias)')
 ax.set_ylabel('Categoria')
+
 # Adicionando labels ao lado de cada barra
 for i, v in enumerate(tempo_medio_por_categoria):
     ax.text(v + 0.5, i, '{:.2f}'.format(v), ha='left', va='center')
+
 plt.tight_layout()
 st.pyplot(fig)
 
@@ -157,12 +176,11 @@ ax.set_title('Relação entre Tipo e Urgência dos Tickets')
 ax.set_xlabel('Tipo')
 ax.set_ylabel('Número de Tickets')
 plt.xticks(rotation=45)
+
 # Adicionando labels nas barras empilhadas
-for index, row in urgencia_por_tipo.iterrows():
-    cum_sum = np.cumsum(row)
-    for i, value in enumerate(row):
-        if value > 0:
-            ax.text(index, cum_sum[i] - value / 2, str(int(value)), ha='center', va='center', fontsize=8, color='white')
+for container in ax.containers:
+    ax.bar_label(container, label_type='center')
+
 plt.tight_layout()
 st.pyplot(fig)
 
