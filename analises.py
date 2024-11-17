@@ -102,21 +102,6 @@ for i, v in enumerate(assunto_counts):
 plt.tight_layout()
 st.pyplot(fig)
 
-# Gráfico Número de Tickets x Status
-fig, ax = plt.subplots()
-status_counts = df_tickets['Status'].value_counts()
-status_counts.plot(kind='bar', color='orange', ax=ax)
-ax.set_title('Número de Tickets x Status')
-ax.set_xlabel('Status')
-ax.set_ylabel('Número de Tickets')
-plt.xticks(rotation=45)
-
-# Adicionando labels acima das barras
-for i, v in enumerate(status_counts):
-    ax.text(i, v + 0.5, str(v), ha='center', va='bottom', fontsize=10)
-
-plt.tight_layout()
-st.pyplot(fig)
 
 # Evolução do Número de Tickets por Mês
 df_tickets['Mes de Abertura'] = df_tickets['Aberto em'].dt.to_period('M')
@@ -205,9 +190,3 @@ ax.set_title('Proporção de Tickets Fechados e Abertos')
 ax.set_ylabel('')
 ax.axis('equal')
 st.pyplot(fig)
-
-st.subheader("Diagnóstico Final")
-st.write("Observamos que a empresa possui um total de 1200 chamados, dos quais 240 foram fechados e 960 permanecem sem fechar. ")
-st.write("Esta distribuição resulta em uma taxa de fechamento de apenas 20%, deixando 80% dos chamados ainda em aberto ou em processo de resolução.")
-st.write("Com apenas 57 dos 299 chamados urgentes fechados, a taxa de conclusão é de aproximadamente 19%. ")
-st.write("Essa taxa é preocupante, especialmente considerando a natureza crítica desses chamados. Isso sugere que processos mais eficientes são necessários para garantir uma resposta rápida e eficaz.")
